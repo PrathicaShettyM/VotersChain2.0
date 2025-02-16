@@ -31,6 +31,16 @@ exports.registerVoter = async (req, res) => {
   phoneNumber = sanitizeHtml(phoneNumber);
   dateOfBirth = new Date(dateOfBirth);
 
+  // Age Validation: age greater than 18 yrs can vote
+  const today = new Date();
+  const age = today.getFullYear() - dateOfBirth.getFullYear();
+  const isOldEnough =
+    age > 18 || (age === 18 && today >= new Date(dateOfBirth).setFullYear(dateOfBirth.getFullYear() + 18));
+
+  if (!isOldEnough) {
+    return res.status(400).json({ message: "Voter must be at least 18 years old to register." });
+  }
+
   try {
     // Generate Ethereum Wallet
     const wallet = ethers.Wallet.createRandom();

@@ -1,8 +1,9 @@
 require("dotenv").config();
 const { validationResult } = require("express-validator");
 const Voter = require("../models/Voter");
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const Device = require("../models/Device");
+const useragent = require("express-useragent");
 
 const login = async (req, res) => {
     const errors = validationResult(req);
@@ -33,8 +34,8 @@ const login = async (req, res) => {
         if (!voter) 
             return res.status(400).json({ message: "Invalid Credentials" });
 
-        const isMatch = await bcrypt.compare(password, voter.password);
-        if (!isMatch)
+        // Directly compare password (NO ENCRYPTION)
+        if (password !== voter.password)
             return res.status(400).json({ message: "Invalid Credentials" });
 
         // Generate JWT token for voter
@@ -43,6 +44,21 @@ const login = async (req, res) => {
             process.env.JWT_SECRET, 
             { expiresIn: "1h" }
         );
+
+        // Extract device details from request headers
+        const source = req.headers["user-agent"];
+        const agent = useragent.parse(source);
+
+        // Store device info in DB
+        const deviceData = {
+            browser_info: agent.browser,
+            OS: agent.os,
+            type: agent.isMobile ? "Mobile" : agent.isDesktop ? "Desktop" : "Tablet",
+            email: voter.email,
+            ethereum_address: voter.ethereum_address,
+        };
+
+        await Device.create(deviceData);
 
         res.json({ 
             token, 
@@ -53,6 +69,7 @@ const login = async (req, res) => {
         });
 
     } catch (error) {
+        console.error("Login Error:", error);
         res.status(500).json({ message: "Server Error" });
     }
 };

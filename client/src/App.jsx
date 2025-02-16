@@ -10,6 +10,9 @@ import Forbidden from "./pages/Forbidden";
 import AddVoter from "./pages/AddVoter";
 import AddCandidate from "./pages/AddCandidate";
 import AddElection from "./pages/AddElection";
+import ViewVoters from "./pages/ViewVoters";
+import ViewCandidates from "./pages/ViewCandidates";
+import ViewElections from "./pages/ViewElection"
 
 const PrivateRoute = ({ children, role }) => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -42,14 +45,14 @@ function App() {
           <AddElection />
         </PrivateRoute>} />
 
-        <Route path="/admin/view-voter" element={<PrivateRoute role="admin">
-          <AddVoter />
+        <Route path="/admin/view-voters" element={<PrivateRoute role="admin">
+          <ViewVoters />
         </PrivateRoute>} />
-        <Route path="/admin/view-candidate" element={<PrivateRoute role="admin">
-          <AddCandidate />
+        <Route path="/admin/view-candidates" element={<PrivateRoute role="admin">
+          <ViewCandidates />
         </PrivateRoute>} />
-        <Route path="/admin/view-election" element={<PrivateRoute role="admin">
-          <AdminDashboard />
+        <Route path="/admin/view-elections" element={<PrivateRoute role="admin">
+          <ViewElections />
         </PrivateRoute>} />
       
       

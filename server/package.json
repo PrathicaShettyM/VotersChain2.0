@@ -18,13 +18,15 @@
     "dotenv": "^16.4.7",
     "ethers": "^6.13.5",
     "express": "^4.21.2",
+    "express-useragent": "^1.0.15",
     "express-validator": "^7.2.1",
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.10.1",
     "mongoose-sequence": "^6.0.1",
     "nodemailer": "^6.10.0",
-    "sanitize-html": "^2.14.0"
+    "sanitize-html": "^2.14.0",
+    "uuid": "^11.0.5"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
