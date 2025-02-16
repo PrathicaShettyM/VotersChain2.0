@@ -1,52 +1,78 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInstance.js"; // Import the configured Axios instance
 
-export default function Login() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-    const navigate = useNavigate();
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-    const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
-    const validatePassword = (password) => password.length >= 6;
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      // Use the axiosInstance for the API call
+      const response = await axiosInstance.post("/login", { email, password });
+      alert(response.data.message);
+      
+      // Store token and user details in localStorage
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify({ email: response.data.email, role: response.data.role })); // Fix here
+      }
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
+      // Redirect after login based on the response
+      if (response.data.redirectTo) {
+        navigate(response.data.redirectTo);
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || "An error occurred.");
+    }
+  };
 
-        if (!validateEmail(email)) return setError("Invalid email format");
-        if (!validatePassword(password)) return setError("Password must be at least 6 characters");
+  return (
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-sm bg-white rounded-lg shadow-md p-6">
+        <h2 className="text-2xl font-bold text-center mb-4">Login</h2>
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+        <form onSubmit={handleLogin}>
+          <div className="mb-4">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              autoComplete="current-password"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            Login
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
 
-        try {
-            const res = await axios.post("http://localhost:5018/api/v2/auth/login", { email, password });
-            localStorage.setItem("user", JSON.stringify(res.data));
-            res.data.role === "admin" ? navigate("/admin/dashboard") : navigate("/voter/dashboard");
-        } catch (err) {
-            setError(err.response?.data?.message || "Login Failed");
-        }
-    };
-
-    return (
-        <div className="max-w-md mx-auto p-6 bg-gray-100 rounded shadow-md">
-            <h2 className="text-xl font-bold mb-4">Login</h2>
-            {error && <p className="text-red-500">{error}</p>}
-            <form onSubmit={handleLogin}>
-                <input
-                    type="email"
-                    className="border p-2 w-full"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-                <input
-                    type="password"
-                    className="border p-2 w-full mt-2"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <button className="bg-blue-500 text-white w-full py-2 mt-4">Login</button>
-            </form>
-        </div>
-    );
-}
+export default Login;

@@ -1,13 +1,42 @@
-import { Link } from 'react-router-dom';
+import Navbar from '../components/Navbar'; 
+import Footer from '../components/Footer'; 
+import heroImage from '../assets/heroImg.jpg'; 
+import {Link} from 'react-router-dom';
 
-export default function Home(){
-    return(
-        <div className='text-center mt-10'>
-            <h1 className='text-4xl font-bold'>Welcome to VotersChain 2.0 </h1>
-            <nav className='mt-5 space-x-4'>
-                <Link to='/login' className='bg-blue-500 text-white px-4 py-2 rounded'>Login</Link>
-                <Link to='/register' className='bg-blue-500 text-white px-4 py-2 rounded'>Register</Link>
-            </nav>
+function Home() {
+  return (
+    <div className="h-[70vh] flex flex-col">
+      <Navbar /> {/* Navbar at the top */}
+
+      <main className="flex-grow flex items-center justify-center"> {/* Main content area */}
+        <div className="container mx-auto px-4 flex flex-col md:flex-row items-center h-full"> {/* Container for responsiveness */}
+          <div className="md:w-1/2 p-6 text-center md:text-left"> {/* Left side content */}
+            <h1 className="text-4xl font-bold mb-4 text-cyan-950">
+              Welcome to VotersChain2.0
+            </h1>
+            <p className="text-lg text-cyan-900 leading-relaxed mb-8">
+              Experience the future of secure and transparent elections with our
+              decentralized voting system. Built on blockchain technology, we
+              ensure verifiable, tamper-proof, and accessible voting for
+              everyone.
+            </p>
+            <Link to="/aboutus" className="bg-cyan-950 hover:border-2 hover:border-cyan-950 hover:bg-white hover:text-cyan-950 text-white font-bold py-3 px-10 rounded">
+              About Us
+            </Link>
+          </div>
+          <div className="md:w-1/2 p-6"> {/* Right side image */}
+            <img
+              src={heroImage}
+              alt="Decentralized Voting Illustration"
+              className="rounded-lg shadow-lg w-full h-auto object-cover"
+            />
+          </div>
         </div>
-    );
+      </main>
+
+      <Footer /> 
+    </div>
+  );
 }
+
+export default Home;
