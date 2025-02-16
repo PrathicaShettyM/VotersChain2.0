@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const VoterSchema = new mongoose.Schema({
   ethereumAddress: { 
     type: String,
-    required: false, 
     unique: true 
     },
   name: { 
@@ -16,13 +15,16 @@ const VoterSchema = new mongoose.Schema({
     unique: true 
     },
   phoneNumber: { 
-    type: String 
+    type: String,
+    required: true
     },
   dateOfBirth: { 
-    type: Date 
+    type: Date,
+    required: true
     },
   password: { 
-    type: String 
+    type: String,
+    required: true
     },
   isRegistered: { 
     type: Boolean, 

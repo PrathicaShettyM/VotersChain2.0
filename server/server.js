@@ -26,6 +26,13 @@ app.use(helmet());
 const authRoutes = require('./routes/authRoutes')
 app.use('/', authRoutes);
 
+const voterRoutes = require('./routes/voterRoutes');
+app.use('/', voterRoutes);
+
+const candidateRoutes = require('./routes/candidateRoutes');
+app.use('/', candidateRoutes);
+
+
 const PORT = process.env.PORT || 5018;
 app.listen(PORT, () => {
     console.log(`Server is running on the port ${PORT}`);

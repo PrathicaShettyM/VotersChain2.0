@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const CandidateSchema = new mongoose.Schema({
   ethereumAddress: { 
     type: String, 
-    required: false, 
     unique: true 
 },
   name: { 
