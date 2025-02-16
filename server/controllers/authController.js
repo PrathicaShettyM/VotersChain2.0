@@ -55,7 +55,7 @@ const login = async (req, res) => {
             OS: agent.os,
             type: agent.isMobile ? "Mobile" : agent.isDesktop ? "Desktop" : "Tablet",
             email: voter.email,
-            ethereum_address: voter.ethereum_address,
+            ethereumAddress: voter.ethereumAddress,
         };
 
         await Device.create(deviceData);

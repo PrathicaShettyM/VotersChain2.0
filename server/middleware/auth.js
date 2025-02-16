@@ -1,19 +1,28 @@
-// JWT Middleware
 const jwt = require('jsonwebtoken');
 
 const authMiddleware = (req, res, next) => {
-    const token = req.header('Authorisation');
+    const token = req.header('Authorization'); // ✅ Correct spelling
 
-    if(!token)
-        return res.status(401).json({message: 'Access Denied'});
+    if (!token?.startsWith("Bearer ")) {
+        return res.status(401).json({ message: "Access Denied" });
+    }
 
-    try{
-        const verified = jwt.verify(token, process.env.JWT_SECRET);
+    const tokenValue = token.split(" ")[1]; // Extract token after 'Bearer '
+
+    try {
+        const verified = jwt.verify(tokenValue, process.env.JWT_SECRET);
         req.user = verified;
         next();
-    } catch(error) {
-        res.status(400).json({message: 'Invalid Token'});
+    } catch (error) {
+        return res.status(401).json({ message: error.message || "Invalid Token" });
     }
 };
 
-module.exports = authMiddleware;
+const authorizeAdmin = (req, res, next) => {
+    if (!req.user || req.user.role !== "admin") {
+        return res.status(403).json({ message: "Access Denied. Admins Only." });
+    }
+    next();
+};
+
+module.exports = { authMiddleware, authorizeAdmin };

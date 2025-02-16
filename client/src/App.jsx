@@ -13,6 +13,8 @@ import AddElection from "./pages/AddElection";
 import ViewVoters from "./pages/ViewVoters";
 import ViewCandidates from "./pages/ViewCandidates";
 import ViewElections from "./pages/ViewElection"
+import ElectionCandidates from "./pages/ElectionCandidates";
+
 
 const PrivateRoute = ({ children, role }) => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -54,7 +56,10 @@ function App() {
         <Route path="/admin/view-elections" element={<PrivateRoute role="admin">
           <ViewElections />
         </PrivateRoute>} />
-      
+        
+        <Route path="/admin/register-candidate-to-election" element={<PrivateRoute role="admin">
+          <ElectionCandidates />
+        </PrivateRoute>} />
       
       </Routes>
     </BrowserRouter>

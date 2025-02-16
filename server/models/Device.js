@@ -7,7 +7,7 @@ const DeviceSchema = new mongoose.Schema({
   OS: { type: String, required: true },
   type: { type: String, required: true },
   email: { type: String, required: true, ref: "Voter" },
-  ethereum_address: { type: String, required: true, ref: "Voter" },
+  ethereumAddress: { type: String, required: true, ref: "Voter" },
   login_time: { type: Date, default: Date.now },
 });
 

@@ -27,8 +27,7 @@ export default function AdminDashboard() {
                     <DashboardCard title="Add Voters" link="/admin/register-voter" description="Register new voters for the election." className="bg-blue-600 text-white hover:shadow-lg" />
                     <DashboardCard title="Add Candidates" link="/admin/register-candidate" description="Add candidates who will be running in the election." className="bg-blue-600 text-white hover:shadow-lg" />
                     <DashboardCard title="Set Election Details" link="/admin/register-election" description="Define the election schedule and rules." className="bg-blue-600 text-white hover:shadow-lg" />
-                    <DashboardCard title="Register Candidates on Blockchain" link="/admin/register-candidate-on-blockchain" description="Ensure candidates' data is securely stored on the blockchain." className="bg-blue-600 text-white hover:shadow-lg" />
-                    <DashboardCard title="Register Voters on Blockchain" link="/admin/register-voter-on-blockchain" description="Securely register voters on the blockchain network." className="bg-blue-600 text-white hover:shadow-lg" />
+                    <DashboardCard title="Register Candidates to Election" link="/admin/register-candidate-to-election" description="Ensure candidates' data is securely stored on the blockchain." className="bg-blue-600 text-white hover:shadow-lg" />
                 </aside>
 
                 {/* Main Content (70%) */}

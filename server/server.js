@@ -39,9 +39,12 @@ const electionRoutes = require('./routes/electionRoutes');
 app.use('/', electionRoutes);
 
 
+// set election candidates
+const electionCandidateRoutes = require("./routes/electionCandidateRoutes");
+app.use("/", electionCandidateRoutes);
 
-
-
+const elections = require('./routes/electionPageRoute');
+app.use("/", elections);
 
 
 
