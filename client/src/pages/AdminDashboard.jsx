@@ -35,26 +35,26 @@ export default function AdminDashboard() {
                 {/* Main Content (70%) */}
                 <main className="w-2/3 grid grid-cols-2 gap-6 h-full">
                     {/* Top Row (50% each) */}
-                    <div className="bg-white shadow-lg rounded-lg p-6">
+                    <div className="bg-white shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105">
                         <h2 className="text-2xl font-bold mb-4 text-cyan-700">View Candidates</h2>
                         <p className="text-gray-600 text-[17px]">View the list of registered candidates and their details.</p>
                         <a href="/admin/view-candidates" className="text-blue-500 hover:underline text-[17px]">View Candidates</a>
                     </div>
-                    <div className="bg-white shadow-lg rounded-lg p-6">
+                    <div className="bg-white shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105">
                         <h2 className="text-2xl font-bold mb-4 text-cyan-700">View Voters</h2>
                         <p className="text-gray-600 text-[17px]">Check the list of registered voters and their eligibility status.</p>
                         <a href="/admin/view-voters" className="text-blue-500 hover:underline text-[17px]">View Voters</a>
                     </div>
 
                     {/* Middle Row (Full Width - 70%) */}
-                    <div className="col-span-2 bg-white shadow-lg rounded-lg p-6">
+                    <div className="col-span-2 bg-white shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105">
                         <h2 className="text-2xl font-bold mb-4 text-cyan-700">Election Details</h2>
                         <p className="text-gray-600 text-[17px]">Review the election timeline, rules, and associated regulations.</p>
                         <a href="/admin/view-elections" className="text-blue-500 hover:underline text-[17px]">View Election Details</a>
                     </div>
 
                     {/* Bottom Row (Full Width - 70%) */}
-                    <div className="col-span-2 bg-white shadow-lg rounded-lg p-6">
+                    <div className="col-span-2 bg-white shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105">
                         <h2 className="text-2xl font-bold mb-4 text-cyan-700">Election Results</h2>
                         <p className="text-gray-600 text-[17px]">Analyze election results, vote distribution, and overall statistics.</p>
                         <a href="/admin/results/12345" className="text-blue-500 hover:underline text-[17px]">View Results</a>

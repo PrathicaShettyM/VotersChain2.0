@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axiosInstance from "../utils/axiosInstance";
 
 function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -11,28 +10,10 @@ function Navbar() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await axiosInstance.get("/auth/me");
-        setUser(response.data);
-        localStorage.setItem("user", JSON.stringify(response.data));
-      } catch (error) {
-        console.error("User not authenticated:", error);
-      }
-    };
-    fetchUser();
-  }, []);
-
-  const handleLogout = async () => {
-    try {
-      await axiosInstance.post("/auth/logout");
-      setUser(null);
-      localStorage.removeItem("user");
-      navigate("/login");
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    navigate("/login", { replace: true }); // Redirect to login page after logout
   };
 
   return (
@@ -63,6 +44,7 @@ function Navbar() {
           )}
         </div>
 
+        {/* Mobile Menu Button */}
         <div className="md:hidden">
           <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-white focus:outline-none">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" viewBox="0 0 24 24" stroke="currentColor" fill="none">
@@ -72,6 +54,7 @@ function Navbar() {
         </div>
       </div>
 
+      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-gradient-to-r from-cyan-900 to-blue-900 text-white text-lg py-2">
           <Link to="/" className="block py-2 text-center hover:text-gray-300">Home</Link>
