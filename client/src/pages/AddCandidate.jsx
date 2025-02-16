@@ -40,10 +40,6 @@ function AddCandidate(){
       <form onSubmit={handleSubmit} className="w-full max-w-lg p-6 bg-white rounded shadow-md border-black border-2">
         <h2 className="text-2xl font-bold mb-4 text-center text-cyan-950">Add Candidate</h2>
         <div className="mb-4">
-          <label className="block text-gray-700">Ethereum Address</label>
-          <input type="text" name="ethereumAddress" value={formData.ethereumAddress} className="w-full px-3 py-2 border rounded-md bg-gray-200" readOnly />
-        </div>
-        <div className="mb-4">
           <label className="block text-gray-700">Name</label>
           <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full px-3 py-2 border rounded-md" required />
         </div>

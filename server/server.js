@@ -26,11 +26,24 @@ app.use(helmet());
 const authRoutes = require('./routes/authRoutes')
 app.use('/', authRoutes);
 
+// voter registration route
 const voterRoutes = require('./routes/voterRoutes');
 app.use('/', voterRoutes);
 
+// candidate registration route
 const candidateRoutes = require('./routes/candidateRoutes');
 app.use('/', candidateRoutes);
+
+// election registration route
+const electionRoutes = require('./routes/electionRoutes');
+app.use('/', electionRoutes);
+
+
+
+
+
+
+
 
 
 const PORT = process.env.PORT || 5018;

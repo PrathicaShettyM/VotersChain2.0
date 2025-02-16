@@ -3,7 +3,7 @@
 - npm install express mongoose dotenv bcryptjs jsonwebtoken cors nodemon
 
 
-- npm start
+- nodemon server.js
 
 # Frontend Installation
 - npm create vite@latest . --template react
