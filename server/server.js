@@ -55,6 +55,10 @@ app.use("/", electionData);
 const voterDashboardRoutes = require("./routes/voterDashboardRoutes");
 app.use("/", voterDashboardRoutes);
 
+
+// funding voters
+require("./controllers/fundVoterController");
+
 const PORT = process.env.PORT || 5018;
 app.listen(PORT, () => {
     console.log(`Server is running on the port ${PORT}`);

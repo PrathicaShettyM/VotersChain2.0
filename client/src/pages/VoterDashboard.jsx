@@ -20,22 +20,32 @@ const VoterDashboard = () => {
 
   const connectWallet = async () => {
     if (!window.ethereum) return showMessage('error', 'Please install MetaMask');
+    
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      await provider.send("eth_requestAccounts", []);
-      const signer = await provider.getSigner();
-      const address = await signer.getAddress();
-      setUserAddress(address);
-      const contractInstance = new ethers.Contract(
-        import.meta.env.VITE_CONTRACT_ADDRESS, 
-        cABI.abi, 
-        signer
-      );
-      setContract(contractInstance);
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        await provider.send("eth_requestAccounts", []);
+        
+        const signer = await provider.getSigner();
+        const address = await signer.getAddress();
+        setUserAddress(address);
+        
+        // Fetch the balance of the connected account
+        const balance = await provider.getBalance(address);
+        console.log(`Balance: ${ethers.formatEther(balance)} ETH`);
+        
+        const contractInstance = new ethers.Contract(
+            import.meta.env.VITE_CONTRACT_ADDRESS, 
+            cABI.abi, 
+            signer
+        );
+        setContract(contractInstance);
+
+        showMessage('success', `Wallet connected: ${address}`);
     } catch (error) { 
-      showMessage('error', 'Failed to connect: ' + error.message);
+        showMessage('error', 'Failed to connect: ' + error.message);
     }
-  };
+};
+
 
   const showMessage = (type, text) => {
     setMessage({ type, text });
@@ -102,37 +112,42 @@ const VoterDashboard = () => {
 
   const castVote = async (electionId, candidateIndex) => {
     if (!contract) return showMessage('error', 'Please connect your wallet first');
+    
     try {
-      setLoading(true);
-      const tx = await contract.castVote(electionId, candidateIndex);
-      await tx.wait();
-      
-      // Get the vote details from the transaction receipt
-      const receipt = await tx.wait();
-      const voteEvent = receipt.events.find(e => e.event === 'VoteCast');
-      if (voteEvent) {
-        setVoteDetails({
-          electionId: voteEvent.args.electionId.toString(),
-          candidateId: voteEvent.args.candidateId.toString(),
-          voter: voteEvent.args.voter
-        });
-      }
-      
-      showMessage('success', 'Vote successfully recorded on blockchain');
-      await fetchElections();
-      if (selectedElection) {
-        await fetchCandidates(selectedElection);
-      }
+        setLoading(true);
+        const tx = await contract.castVote(electionId, candidateIndex);
+        const receipt = await tx.wait();
+
+        // Extract vote event details
+        const voteEvent = receipt.events.find(e => e.event === 'VoteCast');
+        const voteDetails = voteEvent ? {
+            electionId: voteEvent.args.electionId.toString(),
+            candidateId: voteEvent.args.candidateId.toString(),
+            voterEthereumAddress: voteEvent.args.voter,
+            transactionHash: receipt.transactionHash
+        } : null;
+
+        if (voteDetails) {
+            // Send vote data to the backend
+            await axiosInstance.post('/voter/process-voter-data', {
+                auditData: {
+                    transactionHash: voteDetails.transactionHash,
+                    transactionType: "Vote",
+                    userEthereumAddress: voteDetails.voterEthereumAddress,
+                    additionalDetails: `Voted for candidate ${voteDetails.candidateId} in election ${voteDetails.electionId}`
+                },
+                voteData: voteDetails
+            });
+
+            showMessage('success', 'Vote recorded successfully!');
+        }
+
+        await fetchElections();
+        if (selectedElection) await fetchCandidates(selectedElection);
     } catch (error) {
-      if (error.message.includes("Already voted")) {
-        showMessage('error', 'You have already voted in this election');
-      } else if (error.message.includes("Election is not active")) {
-        showMessage('error', 'This election is not currently active');
-      } else {
         showMessage('error', 'Failed to cast vote: ' + error.message);
-      }
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
   };
 
