@@ -72,7 +72,8 @@ function Navbar() {
           <Link to="/" className="block py-2 text-center hover:text-gray-300">Home</Link>
           <Link to="/aboutus" className="block py-2 text-center hover:text-gray-300">About Us</Link>
           <Link to="/elections" className="block py-2 text-center hover:text-gray-300">Elections</Link>
-
+          <Link to="/results" className="block py-2 text-center hover:text-gray-300">Results</Link>
+          
           {/* Admin Dashboard in Mobile Menu */}
           {user?.role === "admin" && (
             <Link to="/admin/dashboard" className="block py-2 text-center hover:text-gray-300">

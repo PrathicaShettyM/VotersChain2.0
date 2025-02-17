@@ -12,8 +12,11 @@ const VoterDashboard = () => {
   const [contract, setContract] = useState(null);
   const [message, setMessage] = useState({ type: '', text: '' });
   const [userAddress, setUserAddress] = useState('');
+  const [voteDetails, setVoteDetails] = useState(null);
 
-  useEffect(() => { fetchElections(); }, []);
+  useEffect(() => { 
+    fetchElections();
+  }, []);
 
   const connectWallet = async () => {
     if (!window.ethereum) return showMessage('error', 'Please install MetaMask');
@@ -21,9 +24,17 @@ const VoterDashboard = () => {
       const provider = new ethers.BrowserProvider(window.ethereum);
       await provider.send("eth_requestAccounts", []);
       const signer = await provider.getSigner();
-      setUserAddress(await signer.getAddress());
-      setContract(new ethers.Contract(import.meta.env.VITE_CONTRACT_ADDRESS, cABI.abi, signer));
-    } catch (error) { showMessage('error', 'Failed to connect'); }
+      const address = await signer.getAddress();
+      setUserAddress(address);
+      const contractInstance = new ethers.Contract(
+        import.meta.env.VITE_CONTRACT_ADDRESS, 
+        cABI.abi, 
+        signer
+      );
+      setContract(contractInstance);
+    } catch (error) { 
+      showMessage('error', 'Failed to connect: ' + error.message);
+    }
   };
 
   const showMessage = (type, text) => {
@@ -34,59 +45,169 @@ const VoterDashboard = () => {
   const fetchElections = async () => {
     try {
       const { data } = await axiosInstance.get('/voter/dashboard');
-      const correctedData = data.electionData.map(e => ({
-        ...e,
-        candidates: e.candidates.map(c => ({
-          candidate_name: c.candidate_name,
-          candidate_address: c.candidate_address,
-          party_affiliation: c.party_affiliation
-        }))
+      const correctedData = await Promise.all(data.electionData.map(async e => {
+        // Fetch on-chain election details
+        if (contract) {
+          try {
+            const electionDetails = await contract.getElectionDetails(e.election_id);
+            return {
+              ...e,
+              isActive: electionDetails.isActive,
+              totalVotes: electionDetails.totalVotes.toString(),
+              candidates: e.candidates.map(c => ({
+                candidate_name: c.candidate_name,
+                candidate_address: c.candidate_address,
+                party_affiliation: c.party_affiliation
+              }))
+            };
+          } catch (error) {
+            console.error('Error fetching election details:', error);
+            return e;
+          }
+        }
+        return e;
       }));
+      
       setElections(correctedData);
       setUserAddress(data.voterAddress);
-    } catch (error) { showMessage('error', 'Failed to fetch elections'); }
+    } catch (error) { 
+      showMessage('error', 'Failed to fetch elections: ' + error.message);
+    }
   };
 
-  const fetchCandidates = (election) => { setSelectedElection(election); setCandidates(election.candidates); };
+  const fetchCandidates = async (election) => {
+    setSelectedElection(election);
+    try {
+      if (contract) {
+        const candidatesList = await Promise.all(
+          election.candidates.map(async (_, index) => {
+            const details = await contract.getCandidateDetails(
+              election.election_id,
+              index
+            );
+            return {
+              ...election.candidates[index],
+              voteCount: details.voteCount.toString()
+            };
+          })
+        );
+        setCandidates(candidatesList);
+      } else {
+        setCandidates(election.candidates);
+      }
+    } catch (error) {
+      showMessage('error', 'Failed to fetch candidates: ' + error.message);
+    }
+  };
 
   const castVote = async (electionId, candidateIndex) => {
-    if (!contract) return showMessage('error', 'Connect wallet');
+    if (!contract) return showMessage('error', 'Please connect your wallet first');
     try {
       setLoading(true);
       const tx = await contract.castVote(electionId, candidateIndex);
       await tx.wait();
-      showMessage('success', 'Vote recorded');
-      fetchElections();
-    } catch (error) { showMessage('error', error.message); } finally { setLoading(false); }
+      
+      // Get the vote details from the transaction receipt
+      const receipt = await tx.wait();
+      const voteEvent = receipt.events.find(e => e.event === 'VoteCast');
+      if (voteEvent) {
+        setVoteDetails({
+          electionId: voteEvent.args.electionId.toString(),
+          candidateId: voteEvent.args.candidateId.toString(),
+          voter: voteEvent.args.voter
+        });
+      }
+      
+      showMessage('success', 'Vote successfully recorded on blockchain');
+      await fetchElections();
+      if (selectedElection) {
+        await fetchCandidates(selectedElection);
+      }
+    } catch (error) {
+      if (error.message.includes("Already voted")) {
+        showMessage('error', 'You have already voted in this election');
+      } else if (error.message.includes("Election is not active")) {
+        showMessage('error', 'This election is not currently active');
+      } else {
+        showMessage('error', 'Failed to cast vote: ' + error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <>
       <Navbar />
       <div className="container mx-auto px-4 py-8">
-        {message.text && (<div className={`mb-4 p-4 rounded-lg ${message.type === 'error' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>{message.text}</div>)}
+        {message.text && (
+          <div className={`mb-4 p-4 rounded-lg ${
+            message.type === 'error' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
+          }`}>
+            {message.text}
+          </div>
+        )}
+        
         <h1 className="text-3xl font-bold mb-6">Voter Dashboard</h1>
+        
         <div className="text-center bg-gray-50 p-4 rounded-lg mb-6">
-          <button className="px-6 py-3 border border-black text-black bg-white rounded-lg text-lg" onClick={connectWallet}>{userAddress ? userAddress : 'Connect Wallet'}</button>
+          <button 
+            className="px-6 py-3 border border-black text-black bg-white rounded-lg text-lg"
+            onClick={connectWallet}
+          >
+            {userAddress ? `Connected: ${userAddress.slice(0, 6)}...${userAddress.slice(-4)}` : 'Connect Wallet'}
+          </button>
         </div>
+
         <div className="bg-white rounded-lg shadow-md mb-6">
           <h2 className="text-2xl font-semibold p-4 border-b">Active Elections</h2>
           <div className="p-4 space-y-4">
             {elections.map(election => (
-              <button key={election.election_id} className="w-full text-left px-4 py-3 text-lg border rounded-lg hover:bg-gray-50" onClick={() => fetchCandidates(election)}>{election.election_name}</button>
+              <div key={election.election_id} 
+                   className="border rounded-lg p-4">
+                <button 
+                  className="w-full text-left px-4 py-3 text-lg hover:bg-gray-50"
+                  onClick={() => fetchCandidates(election)}
+                >
+                  <span className="font-semibold">{election.election_name}</span>
+                  {election.totalVotes && (
+                    <span className="ml-4 text-sm text-gray-600">
+                      Total Votes: {election.totalVotes}
+                    </span>
+                  )}
+                </button>
+              </div>
             ))}
           </div>
         </div>
+
         {selectedElection && (
           <div className="bg-white rounded-lg shadow-md mt-4">
-            <h2 className="text-2xl font-semibold p-4 border-b">{selectedElection.election_name} - Candidates</h2>
+            <h2 className="text-2xl font-semibold p-4 border-b">
+              {selectedElection.election_name} - Candidates
+            </h2>
             <div className="p-4 space-y-4">
               {candidates.map((candidate, index) => (
                 <div key={index} className="p-4 border rounded-lg text-lg">
                   <p className="font-semibold">{candidate.candidate_name}</p>
                   <p className="text-gray-600">{candidate.party_affiliation}</p>
-                  <p className="text-gray-500 text-sm">Address: {candidate.candidate_address}</p>
-                  <button className={`mt-3 px-6 py-2 rounded-lg text-white text-lg ${loading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'}`} disabled={loading} onClick={() => castVote(selectedElection.election_id, index)}>{loading ? 'Processing...' : 'Vote'}</button>
+                  <p className="text-gray-500 text-sm">
+                    Address: {candidate.candidate_address}
+                  </p>
+                  {candidate.voteCount && (
+                    <p className="text-sm text-gray-600 mt-2">
+                      Votes: {candidate.voteCount}
+                    </p>
+                  )}
+                  <button 
+                    className={`mt-3 px-6 py-2 rounded-lg text-white text-lg ${
+                      loading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'
+                    }`}
+                    disabled={loading}
+                    onClick={() => castVote(selectedElection.election_id, index)}
+                  >
+                    {loading ? 'Processing...' : 'Vote'}
+                  </button>
                 </div>
               ))}
             </div>

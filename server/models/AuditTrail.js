@@ -3,11 +3,13 @@ const mongoose = require('mongoose');
 const AuditTrailsSchema = new mongoose.Schema({
     transactionHash: { 
         type: String, 
-        required: true 
+        required: true,
+        unique: true
     },
     transactionType: { 
         type: String, 
-        required: true 
+        required: true,
+        enum: ["Vote", "Candidate Registration", "Election Creation", "Other"]
     },
     userEthereumAddress: { 
         type: String, 
@@ -18,10 +20,10 @@ const AuditTrailsSchema = new mongoose.Schema({
         default: Date.now 
     },
     additionalDetails: { 
-        type: mongoose.Schema.Types.Mixed 
-    },
-  }, { timestamps: true });
+        type: mongoose.Schema.Types.Mixed, 
+        default: {}
+    }
+}, { timestamps: true });
 
 const AuditTrail = mongoose.model("AuditTrail", AuditTrailsSchema);
 module.exports = AuditTrail;
-  

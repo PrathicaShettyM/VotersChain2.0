@@ -10,3 +10,9 @@
 - npm install tailwindcss @tailwindcss/vite
 
 - npm run dev
+
+# Blockchain
+
+- npx hardhat compile
+- npx hardhat node
+- npx hardhat run scripts/deploy.js --network localhost
