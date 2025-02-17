@@ -47,14 +47,13 @@ app.use("/", electionCandidateRoutes);
 const elections = require('./routes/electionPageRoute');
 app.use("/", elections);
 
-// vote routes for voting
-// const voteRoutes = require('./routes/voteRoutes');
-// app.use('/', voteRoutes);
-
 // election data routes
 const electionData = require('./routes/electionDataRoutes');
 app.use("/", electionData);
 
+// this is for votes, audit trails n results all in one
+const voterDashboardRoutes = require("./routes/voterDashboardRoutes");
+app.use("/", voterDashboardRoutes);
 
 const PORT = process.env.PORT || 5018;
 app.listen(PORT, () => {
