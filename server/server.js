@@ -43,13 +43,17 @@ app.use('/', electionRoutes);
 const electionCandidateRoutes = require("./routes/electionCandidateRoutes");
 app.use("/", electionCandidateRoutes);
 
+// election page(visible to all users)
 const elections = require('./routes/electionPageRoute');
 app.use("/", elections);
 
+// vote routes for voting
+// const voteRoutes = require('./routes/voteRoutes');
+// app.use('/', voteRoutes);
 
-
-
-
+// election data routes
+const electionData = require('./routes/electionDataRoutes');
+app.use("/", electionData);
 
 
 const PORT = process.env.PORT || 5018;

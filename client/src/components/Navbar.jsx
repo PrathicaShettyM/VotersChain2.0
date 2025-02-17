@@ -1,4 +1,4 @@
-import { useState} from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 function Navbar() {
@@ -13,7 +13,7 @@ function Navbar() {
   const handleLogout = () => {
     localStorage.removeItem("user");
     setUser(null);
-    navigate("/login", { replace: true }); // Redirect to login page after logout
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -27,9 +27,21 @@ function Navbar() {
           <Link to="/" className="hover:text-gray-300 transition">Home</Link>
           <Link to="/aboutus" className="hover:text-gray-300 transition">About Us</Link>
           <Link to="/elections" className="hover:text-gray-300 transition">Elections</Link>
+
+          {/* Admin Dashboard for Admin Users */}
           {user?.role === "admin" && (
-            <Link to="/admin/dashboard" className="hover:text-gray-300 transition">Admin Dashboard</Link>
+            <Link to="/admin/dashboard" className="hover:text-gray-300 transition">
+              Admin Dashboard
+            </Link>
           )}
+
+          {/* Voter Dashboard for Voter Users */}
+          {user?.role === "voter" && (
+            <Link to="/voter/dashboard" className="hover:text-gray-300 transition">
+              Voter Dashboard
+            </Link>
+          )}
+
           {user ? (
             <div className="flex items-center space-x-4">
               <span className="text-yellow-300 font-bold">{user.email} ({user.role})</span>
@@ -60,9 +72,21 @@ function Navbar() {
           <Link to="/" className="block py-2 text-center hover:text-gray-300">Home</Link>
           <Link to="/aboutus" className="block py-2 text-center hover:text-gray-300">About Us</Link>
           <Link to="/elections" className="block py-2 text-center hover:text-gray-300">Elections</Link>
+
+          {/* Admin Dashboard in Mobile Menu */}
           {user?.role === "admin" && (
-            <Link to="/admin/dashboard" className="block py-2 text-center hover:text-gray-300">Admin Dashboard</Link>
+            <Link to="/admin/dashboard" className="block py-2 text-center hover:text-gray-300">
+              Admin Dashboard
+            </Link>
           )}
+
+          {/* Voter Dashboard in Mobile Menu */}
+          {user?.role === "voter" && (
+            <Link to="/voter/dashboard" className="block py-2 text-center hover:text-gray-300">
+              Voter Dashboard
+            </Link>
+          )}
+
           {user ? (
             <>
               <span className="block text-center text-yellow-300 py-2">{user.email} ({user.role})</span>

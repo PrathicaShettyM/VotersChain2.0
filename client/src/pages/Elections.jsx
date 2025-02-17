@@ -66,6 +66,7 @@ const Elections = () => {
                         </div>
                     ))}
                 </div>
+                
             </div>
         </div>
     );

@@ -38,9 +38,9 @@ const login = async (req, res) => {
         if (password !== voter.password)
             return res.status(400).json({ message: "Invalid Credentials" });
 
-        // Generate JWT token for voter
+        // Generate JWT token for voter with explicit role
         const token = jwt.sign(
-            { id: voter._id, role: voter.role }, 
+            { id: voter._id, role: "voter" },  // Explicitly set role as "voter"
             process.env.JWT_SECRET, 
             { expiresIn: "1h" }
         );
@@ -62,7 +62,7 @@ const login = async (req, res) => {
 
         res.json({ 
             token, 
-            role: voter.role, 
+            role: "voter", // Ensure role is returned in the response
             email: voter.email,
             redirectTo: "/voter/dashboard",
             message: "Login successful as voter"

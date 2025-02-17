@@ -14,6 +14,7 @@ import ViewVoters from "./pages/ViewVoters";
 import ViewCandidates from "./pages/ViewCandidates";
 import ViewElections from "./pages/ViewElection"
 import ElectionCandidates from "./pages/ElectionCandidates";
+import VoterDashboard from "./pages/VoterDashboard";
 
 
 const PrivateRoute = ({ children, role }) => {
@@ -60,7 +61,11 @@ function App() {
         <Route path="/admin/register-candidate-to-election" element={<PrivateRoute role="admin">
           <ElectionCandidates />
         </PrivateRoute>} />
-      
+
+        <Route path="/voter/dashboard" element={<PrivateRoute role="voter">
+          <VoterDashboard />
+        </PrivateRoute>} />
+
       </Routes>
     </BrowserRouter>
   );
