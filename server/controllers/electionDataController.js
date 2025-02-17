@@ -18,7 +18,7 @@ const getElectionData = async (req, res) => {
           candidates.push({
             candidate_name: candidate.name,
             candidate_address: ec.candidate_addresses[i],
-            party_affiliation: ec.party_affiliations[i] || candidate.party_affiliation
+            party_affiliation: candidate.party_affiliation // Fixed party affiliation to always use candidate's data
           });
         }
       }
