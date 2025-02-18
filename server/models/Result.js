@@ -1,33 +1,40 @@
 const mongoose = require('mongoose');
-const { v4: uuidv4 } = require('uuid');
 
-const ResultSchema = new mongoose.Schema({
-    resultId: { 
-        type: String, 
-        default: uuidv4, 
-        unique: true 
+const resultSchema = new mongoose.Schema({
+    electionId: {
+        type: String,
+        required: true,
+        trim: true
     },
-    electionId: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: "Election", 
-        required: true 
+    candidateId: {
+        type: Number,
+        required: true
     },
-    candidateId: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: "Candidate", 
-        required: true 
+    votesCount: {
+        type: Number,
+        required: true,
+        min: 0,
+        default: 0
     },
-    votesReceived: { 
-        type: Number, 
-        default: 0 
-    },
-    timestamp: { 
-        type: Date, 
-        default: Date.now 
+    lastUpdated: {
+        type: Date,
+        default: Date.now
     }
-}, { timestamps: true });
+}, {
+    timestamps: true
+});
 
-ResultSchema.index({ electionId: 1, candidateId: 1 }, { unique: true });
+// Create a compound unique index for election and candidate
+resultSchema.index({ 
+    electionId: 1, 
+    candidateId: 1 
+}, { 
+    unique: true 
+});
 
-const Result = mongoose.model("Result", ResultSchema);
+// Create additional indexes for querying
+resultSchema.index({ electionId: 1 });
+resultSchema.index({ lastUpdated: 1 });
+
+const Result = mongoose.model('Result', resultSchema);
 module.exports = Result;

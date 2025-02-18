@@ -1,29 +1,38 @@
 const mongoose = require('mongoose');
 
-const AuditTrailsSchema = new mongoose.Schema({
-    transactionHash: { 
-        type: String, 
+const auditTrailSchema = new mongoose.Schema({
+    transactionHash: {
+        type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim: true
     },
-    transactionType: { 
-        type: String, 
+    transactionType: {
+        type: String,
         required: true,
-        enum: ["Vote", "Candidate Registration", "Election Creation", "Other"]
+        enum: ['Vote', 'CreateElection', 'UpdateElection', 'Other']
     },
-    userEthereumAddress: { 
-        type: String, 
-        required: true 
+    userEthereumAddress: {
+        type: String,
+        required: true,
+        trim: true,
+        lowercase: true
     },
-    timestamp: { 
-        type: Date, 
-        default: Date.now 
+    additionalDetails: {
+        type: String,
+        required: false
     },
-    additionalDetails: { 
-        type: mongoose.Schema.Types.Mixed, 
-        default: {}
+    timestamp: {
+        type: Date,
+        default: Date.now
     }
-}, { timestamps: true });
+}, {
+    timestamps: true
+});
 
-const AuditTrail = mongoose.model("AuditTrail", AuditTrailsSchema);
+// Create indexes
+auditTrailSchema.index({ transactionHash: 1 });
+auditTrailSchema.index({ userEthereumAddress: 1 });
+
+const AuditTrail = mongoose.model('AuditTrail', auditTrailSchema);
 module.exports = AuditTrail;

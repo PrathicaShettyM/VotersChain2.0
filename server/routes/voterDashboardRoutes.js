@@ -1,7 +1,8 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { processVoterData } = require("../controllers/voterDashboardController");
+const voterController = require('../controllers/voterDashboardController');
 
-router.post("/voter/dashboard", processVoterData);
+// POST route for processing voter data
+router.post('/dashboard', voterController.processVoterData);
 
 module.exports = router;
