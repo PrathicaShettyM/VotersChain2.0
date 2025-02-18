@@ -6,84 +6,49 @@ const processVoterData = async (req, res) => {
     try {
         const { auditData, voteData, resultData } = req.body;
 
-        // Validate required data
         if (!auditData || !voteData) {
-            return res.status(400).json({
-                success: false,
-                message: "Missing required data fields"
-            });
+            return res.status(400).json({ success: false, message: "Missing required data fields" });
         }
 
-        // First check if voter has already voted to fail fast
         const existingVote = await Vote.findOne({
-            electionId: voteData.electionId,
-            voterEthereumAddress: voteData.voterEthereumAddress
+            electionId: String(voteData.electionId),
+            voterEthereumAddress: String(voteData.voterEthereumAddress)
         });
 
         if (existingVote) {
-            return res.status(400).json({
-                success: false,
-                message: "Voter has already voted in this election!"
-            });
+            return res.status(400).json({ success: false, message: "Voter has already voted!" });
         }
 
-        // Store Audit Trail
-        await new AuditTrail({
-            transactionHash: auditData.transactionHash,
-            transactionType: auditData.transactionType,
-            userEthereumAddress: auditData.userEthereumAddress,
-            additionalDetails: auditData.additionalDetails,
-            timestamp: new Date()
-        }).save();
+        await new AuditTrail(auditData).save();
 
-        // Store Vote
         await new Vote({
-            electionId: voteData.electionId,
-            candidateId: voteData.candidateId,
-            voterEthereumAddress: voteData.voterEthereumAddress,
-            timestamp: new Date()
+            electionId: String(voteData.electionId || '1'),
+            candidateId: String(voteData.candidateId || '0'),
+            voterEthereumAddress: String(voteData.voterEthereumAddress || '0x24374820h26jmud7a93071l'),
+            transactionHash: String(auditData.transactionHash || '0x0nax82n1ibamcujenacoac08unnoyeb9djna152F5281Bhsu20')
         }).save();
 
-        // Update or Create Election Result
         if (resultData) {
             await Result.findOneAndUpdate(
                 {
-                    electionId: resultData.electionId,
-                    candidateId: resultData.candidateId
+                    electionId: String(resultData.electionId || '1'),
+                    candidateId: String(resultData.candidateId || '0')
                 },
                 {
                     $set: {
-                        votesCount: resultData.votesCount,
-                        lastUpdated: new Date()
+                        votesCount: String(resultData.votesCount || '0'),
+                        lastUpdated: new Date().toISOString()
                     }
                 },
                 { upsert: true, new: true }
             );
         }
 
-        res.status(201).json({
-            success: true,
-            message: "Vote recorded successfully!",
-            data: {
-                electionId: voteData.electionId,
-                candidateId: voteData.candidateId,
-                transactionHash: auditData.transactionHash
-            }
-        });
-
+        res.status(201).json({ success: true, message: "Vote recorded successfully!" });
     } catch (error) {
-        console.error('Error in processVoterData:', error);
-        
-        // Handle duplicate key error explicitly
-        if (error.code === 11000) {
-            return res.status(400).json({
-                success: false,
-                message: "Voter has already voted in this election!"
-            });
-        }
+        console.error('Error:', error);
+        res.status(500).json({ success: false, message: "Internal Server Error", error });
     }
 };
 
-module.exports = {
-    processVoterData
-};
+module.exports = { Result, processVoterData };

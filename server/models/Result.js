@@ -7,18 +7,17 @@ const resultSchema = new mongoose.Schema({
         trim: true
     },
     candidateId: {
-        type: Number,
+        type: String,  // Store candidateId as string
         required: true
     },
     votesCount: {
-        type: Number,
+        type: String,  // Store votesCount as string
         required: true,
-        min: 0,
-        default: 0
+        default: '0'
     },
     lastUpdated: {
-        type: Date,
-        default: Date.now
+        type: String,  // Store timestamp as string
+        default: () => new Date().toISOString()
     }
 }, {
     timestamps: true

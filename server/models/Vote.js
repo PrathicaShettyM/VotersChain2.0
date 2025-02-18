@@ -2,26 +2,24 @@ const mongoose = require('mongoose');
 
 const VotesSchema = new mongoose.Schema({
     electionId: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: "Election", 
+        type: String,  // Store as string
         required: true 
     },
     candidateId: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: "Candidate", 
+        type: String,  // Store as string
         required: true 
     },
     voterEthereumAddress: { 
-        type: String, 
+        type: String,  
         required: true 
     },
     transactionHash: { 
-        type: String, 
+        type: String,  
         required: true 
     },
     timestamp: { 
-        type: Date, 
-        default: Date.now 
+        type: String,  // Store timestamp as string
+        default: () => new Date().toISOString() 
     }
 }, { timestamps: true });
 
