@@ -22,6 +22,7 @@ VotersChain revolutionizes traditional voting systems by combining blockchain se
 
 ## 🎯 Core Features
 
+<div align="center">
 <table>
 <tr>
 <td width="50%">
@@ -71,6 +72,7 @@ VotersChain revolutionizes traditional voting systems by combining blockchain se
 </td>
 </tr>
 </table>
+</div>
 
 ---
 
@@ -173,6 +175,7 @@ npm run dev
 
 Our system is built on a robust database schema with the following core components:
 
+<div align="center">
 <table>
 <tr>
 <td width="33%">
@@ -204,6 +207,7 @@ Our system is built on a robust database schema with the following core componen
 </td>
 </tr>
 </table>
+</div>
 
 ---
 
