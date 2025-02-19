@@ -3,6 +3,7 @@ const ElectionCandidate = require('../models/ElectionCandidate');
 const Candidate = require('../models/Candidate');
 const Voter = require('../models/Voter');
 
+// Election data to be displayed on voter dashboard
 const getElectionData = async (req, res) => {
   try {
     const elections = await Election.find();

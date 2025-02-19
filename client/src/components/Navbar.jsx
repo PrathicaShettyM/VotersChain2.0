@@ -27,6 +27,8 @@ function Navbar() {
           <Link to="/" className="hover:text-gray-300 transition">Home</Link>
           <Link to="/aboutus" className="hover:text-gray-300 transition">About Us</Link>
           <Link to="/elections" className="hover:text-gray-300 transition">Elections</Link>
+          <Link to="/results" className="block py-2 text-center hover:text-gray-300">Results</Link> 
+          
 
           {/* Admin Dashboard for Admin Users */}
           {user?.role === "admin" && (

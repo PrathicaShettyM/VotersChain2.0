@@ -5,7 +5,6 @@ exports.createElection = async (req, res) => {
   try {
     let { name, description, start_time, duration_minutes } = req.body;
 
-    // Convert start_time to a Date object
     start_time = new Date(start_time);
     
     if (isNaN(start_time.getTime())) {

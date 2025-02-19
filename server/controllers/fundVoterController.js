@@ -2,6 +2,7 @@ require("dotenv").config();
 const { ethers } = require("ethers");
 const Voter = require("../models/Voter"); // Assuming your Mongoose Voter model
 
+// Fund all the voters 1000 Test Ethers
 // Connect to Hardhat's local blockchain
 const provider = new ethers.JsonRpcProvider("http://127.0.0.1:8545");
 
@@ -39,7 +40,7 @@ async function fundVoters() {
   }
 }
 
-// Run function on startup
+// Run function on startup automatically
 fundVoters();
 
 module.exports = fundVoters;

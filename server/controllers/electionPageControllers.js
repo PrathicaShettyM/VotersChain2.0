@@ -2,6 +2,7 @@ const Election = require('../models/Election');
 const ElectionCandidate = require('../models/ElectionCandidate');
 const Candidate = require('../models/Candidate');
 
+// Get election details from 3 different tables
 exports.getElectionDetails = async (req, res) => {
     try {
         const electionCandidates = await ElectionCandidate.find();

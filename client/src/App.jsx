@@ -33,6 +33,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="*" element={<NotFound />} />
         <Route path="#" element={<Forbidden />} />
+        <Route path="/results" element={<Results />} />
+
 
         {/* Fix: Ensure admin dashboard route is protected */}
         <Route path="/admin/dashboard" element={<PrivateRoute role="admin">

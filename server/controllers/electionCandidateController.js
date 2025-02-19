@@ -2,6 +2,7 @@ const Election = require('../models/Election');
 const Candidate = require('../models/Candidate');
 const ElectionCandidate = require('../models/ElectionCandidate');
 
+// get candidates and election from Election and Candidate Tables
 exports.getCandidatesAndElections = async (req, res) => {
     try {
         const elections = await Election.find();
@@ -13,6 +14,7 @@ exports.getCandidatesAndElections = async (req, res) => {
     }
 };
 
+// assign candidates to election
 exports.assignCandidatesToElection = async (req, res) => {
     const { election_id, candidate_addresses } = req.body;
     

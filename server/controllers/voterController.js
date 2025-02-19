@@ -8,11 +8,11 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.EMAIL_ID, // Replace with your email
-    pass: process.env.EMAIL_PASS, // Replace with your password (Use App Passwords)
+    user: process.env.EMAIL_ID, 
+    pass: process.env.EMAIL_PASS,
   },
-  logger: true, // Log SMTP connection info
-  debug: true,  // Enable debug mode
+  logger: true, 
+  debug: true,  
 });
 
 // Register Voter
@@ -45,7 +45,7 @@ exports.registerVoter = async (req, res) => {
     // Generate Ethereum Wallet
     const wallet = ethers.Wallet.createRandom();
     const ethereumAddress = wallet.address;
-    const privateKey = wallet.privateKey; // ⚠️ Storing in plaintext
+    const privateKey = wallet.privateKey; 
 
     const existingVoter = await Voter.findOne({ email });
     if (existingVoter) {

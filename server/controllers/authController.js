@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const Device = require("../models/Device");
 const useragent = require("express-useragent");
 
+// JWT based login for voters and candidates
 const login = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) 
@@ -13,7 +14,7 @@ const login = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // Check if the user is Admin (fetch from .env)
+        // Check if the user is Admin: from (.env)
         if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
             const token = jwt.sign(
                 { id: "admin", role: "admin" }, 
@@ -34,13 +35,12 @@ const login = async (req, res) => {
         if (!voter) 
             return res.status(400).json({ message: "Invalid Credentials" });
 
-        // Directly compare password (NO ENCRYPTION)
         if (password !== voter.password)
             return res.status(400).json({ message: "Invalid Credentials" });
 
         // Generate JWT token for voter with explicit role
         const token = jwt.sign(
-            { id: voter._id, role: "voter" },  // Explicitly set role as "voter"
+            { id: voter._id, role: "voter" },  
             process.env.JWT_SECRET, 
             { expiresIn: "1h" }
         );
@@ -62,7 +62,7 @@ const login = async (req, res) => {
 
         res.json({ 
             token, 
-            role: "voter", // Ensure role is returned in the response
+            role: "voter", 
             email: voter.email,
             redirectTo: "/voter/dashboard",
             message: "Login successful as voter"
@@ -74,5 +74,4 @@ const login = async (req, res) => {
     }
 };
 
-// Export the login function
 module.exports = { login };

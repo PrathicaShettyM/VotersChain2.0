@@ -274,27 +274,6 @@ const VoterDashboard = () => {
     }
 };
 
-const getElectionResults = async (electionId) => {
-  if (!contract) return;
-  try {
-    const election = await contract.elections(electionId);
-    const candidateCount = election.candidateCount;
-    const resultPromises = [];
-    for (let i = 0; i < Number(candidateCount); i++) {
-      resultPromises.push(contract.getCandidateInfo(electionId, i));
-    }
-    const resultsData = await Promise.all(resultPromises);
-    setResults(resultsData.map((candidate, index) => ({
-      index,
-      address: candidate[0],
-      party: candidate[1],
-      votes: candidate[2].toString()
-    })));
-  } catch (error) {
-    console.error("Error getting results:", error);
-  }
-  };
-
   return (
     <>
       <Navbar />

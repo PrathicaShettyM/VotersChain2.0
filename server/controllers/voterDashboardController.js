@@ -2,6 +2,7 @@ const AuditTrail = require("../models/AuditTrail");
 const Vote = require("../models/Vote");
 const Result = require("../models/Result");
 
+// store audit trail, vote details and result in DB
 const processVoterData = async (req, res) => {
     try {
         const { auditData, voteData, resultData } = req.body;

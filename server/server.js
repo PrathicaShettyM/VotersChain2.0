@@ -20,7 +20,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(helmet());
+app.use(helmet()); 
 
 // auth route
 const authRoutes = require('./routes/authRoutes')
@@ -54,6 +54,10 @@ app.use("/", electionData);
 // this is for votes, audit trails n results all in one
 const voterDashboardRoutes = require("./routes/voterDashboardRoutes");
 app.use("/", voterDashboardRoutes);
+
+// display results
+const results = require("./routes/resultRoutes");
+app.use("/", results);
 
 
 // funding voters

@@ -52,11 +52,12 @@ export default function AdminDashboard() {
                     </div>
 
                     {/* Bottom Row (Full Width - 70%) */}
-                    <div className="col-span-2 bg-white shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105">
+                    {/* <div className="col-span-2 bg-white shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105">
                         <h2 className="text-2xl font-bold mb-4 text-cyan-700">Election Results</h2>
                         <p className="text-gray-600 text-[17px]">Analyze election results, vote distribution, and overall statistics.</p>
                         <a href="/admin/results/12345" className="text-blue-500 hover:underline text-[17px]">View Results</a>
                     </div>
+                    */}
                 </main>
             </div>
             <Footer />

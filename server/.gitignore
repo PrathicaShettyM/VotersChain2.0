@@ -1,5 +1,5 @@
 # ignore node modules
 /node_modules
 
-# igonre the dotenv file which contains important credentials
+# ignore the dotenv file which contains important credentials
 .env

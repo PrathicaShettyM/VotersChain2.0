@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
 
-
+// middleware for JWT login
 const authMiddleware = (req, res, next) => {
     const token = req.header('Authorization');
 
-    console.log("Incoming Token:", token); //  Debugging: Check if token is sent
+    console.log("Incoming Token:", token); 
 
     if (!token?.startsWith("Bearer ")) {
         console.log("No token or incorrect format");
