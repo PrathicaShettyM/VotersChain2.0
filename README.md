@@ -14,6 +14,9 @@
 
 </div>
 
+## Demo
+[Demo of the project](https://youtu.be/dLyB_THV5nE)
+
 ## ✨ Overview
 
 VotersChain revolutionizes traditional voting systems by combining blockchain security with user-friendly interfaces. Our platform ensures transparent, tamper-proof elections while maintaining voter privacy and system integrity.
